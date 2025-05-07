@@ -1,0 +1,51 @@
+name: Update Customer-UI and Create PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-pr:
+    runs-on: [one-thd-gcp]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create and publish new branch
+        run: |
+          BRANCH_STRING="CCUI-0000-Version-Bump"
+          git checkout -b $BRANCH_STRING
+          git push --set-upstream origin $BRANCH_STRING
+          echo "BRANCH_NAME=$BRANCH_STRING"
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.12.0
+          always-auth: true
+          registry-url: https://npm.artifactory.homedepot.com/artifactory/api/npm/npm/
+
+      - name: Update Customer-UI Versions and Build App
+        run: |
+          chmod +x .cicd/scripts/update_ui_version.sh
+          .cicd/scripts/update_ui_version.sh
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "CCUI-0000: Version-Bump"
+      - name: Push branch
+        run: git push 
+
+      - name: Create pull request 
+        id: create_pr
+        run: |
+          PR_URL=$(gh pr create \
+            --title "chore: Version Bump" \
+            --body "Version Bump." \
+            --base main \
+            --head CCUI-0000-Version-Bump)
+            echo "PR_URL=$PR_URL"
+            echo "PR_URL=$PR_URL" >> $GITHUB_OUTPUT
+      - name: Send Slack Notification
+        run: |
+          chmod +x .github/workflows/send_slack_message.sh
+          .github/workflows/pr-message.sh "${{ steps.create_pr.outputs.PR_URL }}"
