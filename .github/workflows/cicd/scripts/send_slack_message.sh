@@ -14,7 +14,7 @@ PR_URL="$1"
 echo "Sending Slack notification for PR: $PR_URL"
 echo "New version: $NEW_VERSION"
 
-curl --location 'https://hooks.slack.com/services/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' \
+curl --location 'https://hooks.slack.com/services/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' \
   --header 'Content-Type: application/json' \
   --data '{
     "blocks": [

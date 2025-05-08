@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-pr:
-    runs-on: [one-thd-gcp]
+    runs-on: [ubuntu-latest]
 
     steps:
       - name: Checkout code
