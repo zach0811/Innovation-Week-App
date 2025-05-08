@@ -11,12 +11,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Git
+        run: |
+          git config --global user.email "zach.d.wilkins@gmail.com"
+          git config --global user.name "Zach Wilkins"
+
       - name: Create and publish new branch
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           BRANCH_STRING="CCUI-0000-Version-Bump"
           git checkout -b $BRANCH_STRING
           git push --set-upstream origin $BRANCH_STRING
           echo "BRANCH_NAME=$BRANCH_STRING"
+
+
+
+          
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
