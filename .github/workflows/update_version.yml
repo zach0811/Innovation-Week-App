@@ -20,6 +20,8 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
+          git config user.name "Zach Wilkins"
+          git config user.email "zach.d.wilkins@gmail.com"
           BRANCH_STRING="CCUI-0000-Version-Bump"
           git checkout -b $BRANCH_STRING
           git push --set-upstream origin $BRANCH_STRING
